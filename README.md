@@ -221,3 +221,11 @@ On fait la migration
 
     php bin/console d:m:m
 
+
+### Les relations
+
+On va commencer par la relation `ManyToMany` depuis `Post` vers `Section`
+
+    php bin/console make:entity Post
+
+On choisit `sections` -> `ManyToMany` -> `Section` -> `yes` -> `posts`

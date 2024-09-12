@@ -54,7 +54,7 @@ Migration:
     ou
     php bin/console d:m:m
 
-### Modification de POST
+### Modification de Post
 
     php bin/console make:entity Post
 
@@ -118,3 +118,106 @@ Doctrine se permet de créer une migration si nécessaire !
 Exécution de la migration
 
     php bin/console d:m:m
+
+### Modification de Section
+
+    php bin/console make:entity Section
+
+```php
+<?php
+
+
+
+#[ORM\Entity(repositoryClass: SectionRepository::class)]
+class Section
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(
+        options:
+        [
+            'unsigned' => true,
+        ]
+    )]
+    private ?int $id = null;
+
+    #[ORM\Column(length: 160)]
+    private ?string $sectionTitle = null;
+
+    #[ORM\Column(length: 600, nullable: true)]
+    private ?string $sectionDescription = null;
+
+  
+}
+```
+
+### Modification de Tag
+
+    php bin/console make:entity Tag
+
+```php
+<?php
+
+
+
+#[ORM\Entity(repositoryClass: TagRepository::class)]
+class Tag
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(
+        options:
+        [
+            'unsigned' => true,
+        ]
+    )]
+    private ?int $id = null;
+
+    #[ORM\Column(
+        # ce sera un champ unique
+        length: 60,
+        unique: true,
+    )]
+    private ?string $tagName = null;
+
+   
+}
+```
+
+### Modification de Comment
+
+    php bin/console make:entity Comment
+
+```php
+<?php
+#[ORM\Entity(repositoryClass: CommentRepository::class)]
+class Comment
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(
+        options:
+            [
+                'unsigned' => true,
+            ]
+    )]
+    private ?int $id = null;
+
+    #[ORM\Column(length: 2500)]
+    private ?string $commentMessage = null;
+
+    #[ORM\Column(
+        type: Types::DATETIME_MUTABLE,
+        options: [
+            'default' => 'CURRENT_TIMESTAMP',
+        ]
+    )]
+    private ?\DateTimeInterface $commentDateCreated = null;
+```
+
+On fait la migration
+
+    php bin/console make:migration
+
+    php bin/console d:m:m
+

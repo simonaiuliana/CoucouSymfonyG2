@@ -8,11 +8,11 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class CoucouController extends AbstractController
 {
-    #[Route('/coucou', name: 'app_coucou')]
+    #[Route('/', name: 'coucou')]
     public function index(): Response
     {
         return $this->render('coucou/index.html.twig', [
-            'controller_name' => 'CoucouController',
+            'title' => 'Coucou',
         ]);
     }
 }

@@ -221,6 +221,7 @@ class Comment
 
 On fait la migration
 
+
     php bin/console make:migration
 
     php bin/console d:m:m
@@ -233,3 +234,6 @@ On va commencer par la relation `ManyToMany` depuis `Post` vers `Section`
     php bin/console make:entity Post
 
 On choisit `sections` -> `ManyToMany` -> `Section` -> `yes` -> `posts`
+
+
+

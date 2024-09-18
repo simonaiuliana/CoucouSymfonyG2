@@ -217,7 +217,13 @@ class Comment
 
 On fait la migration
 
+
     php bin/console make:migration
 
     php bin/console d:m:m
+
+### Désinstallation de asset mapper
+
+    composer remove symfony/ux-turbo symfony/asset-mapper symfony/stimulus-bundle
+    
 

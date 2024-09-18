@@ -250,3 +250,22 @@ On choisit `tags` -> `ManyToMany` -> `Tag` -> `yes` -> `posts`
 
 On choisit `comments` -> `OneToMany` -> `Comment` -> `post` -> `no` -> `no`
 
+## Création d'un User
+
+    php bin/console make:user
+
+on choisit `User` -> `yes`-> `username` -> `yes`
+
+Une table `user` est créée, avec la particularité de servir pour la connexion au site.
+
+https://symfony.com/doc/current/security.html
+
+### Relation User OneToMany Post
+
+    php bin/console make:entity User
+
+on choisit `posts` -> `OneToMany`-> `Post` -> `user` -> `no` -> `no`
+
+
+
+

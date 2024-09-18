@@ -8,6 +8,10 @@ Dans le `.env.local` on met le chemin vers la DB (en commentant le lien vers `po
 DATABASE_URL="mysql://root:@127.0.0.1:3306/coucousymfonyg2?serverVersion=8.0.31&charset=utf8mb4"
 ```
 
+## Création de la DB
+
+    php bin/console doctrine:database:create
+
 ## Création d'entités
 
 Nous allons créer des entités.

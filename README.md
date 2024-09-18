@@ -244,4 +244,9 @@ On choisit `sections` -> `ManyToMany` -> `Section` -> `yes` -> `posts`
 On choisit `tags` -> `ManyToMany` -> `Tag` -> `yes` -> `posts`
 
 
+#### Post -> One2M -> Comment
+
+    php bin/console make:entity Post
+
+On choisit `comments` -> `OneToMany` -> `Comment` -> `post` -> `no` -> `no`
 

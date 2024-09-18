@@ -267,5 +267,52 @@ https://symfony.com/doc/current/security.html
 on choisit `posts` -> `OneToMany`-> `Post` -> `user` -> `no` -> `no`
 
 
+On fait une migration
+
+### Création du formulaire de connexion
+
+    php bin/console make:security:form-login
+
+```bash
+php bin/console make:security:form-login
+
+ Choose a name for the controller class (e.g. SecurityController) [SecurityController]:
+ >
+
+ Do you want to generate a '/logout' URL? (yes/no) [yes]:
+ >
+
+ Do you want to generate PHPUnit tests? [Experimental] (yes/no) [no]:
+ >
+
+ created: src/Controller/SecurityController.php
+ created: templates/security/login.html.twig
+ updated: config/packages/security.yaml
 
 
+  Success!
+
+
+ Next: Review and adapt the login template: security/login.html.twig to suit your needs.
+
+```
+
+On va créer un `User` manuellement dans la DB
+
+Comme `username` :
+
+    coucou
+
+Comme `roles` :
+
+    [
+    "ROLE_ADMIN"
+    ]
+
+Comme `password` :
+
+    coucou123
+
+! on doit hacher le mot de passe avec la commende :
+
+    php bin/console security:hash-password 

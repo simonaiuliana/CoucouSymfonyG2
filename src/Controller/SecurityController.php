@@ -12,6 +12,11 @@ class SecurityController extends AbstractController
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
+        // si on est déjà connecté et qu'on souhaite revenir sur login
+        if($this->isGranted('IS_AUTHENTICATED_FULLY')) {
+            // on retourne sur l'accueil
+            return $this->redirectToRoute('coucou');
+        }
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 

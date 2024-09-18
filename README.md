@@ -316,3 +316,74 @@ Comme `password` :
 ! on doit hacher le mot de passe avec la commende :
 
     php bin/console security:hash-password 
+
+### Création d'un menu
+
+`templates/coucou/_menu.html.twig`
+
+```twig
+<nav>
+    <a href="{{ path('coucou') }}">Accueil</a>
+    <a href="{{ path('app_login') }}">Login</a>
+</nav>
+```
+
+Il est appelé depuis `templates/coucou/index.html.twig` et dans  avec 
+
+    {% include 'coucou/_menu.html.twig' %}
+
+On le modifie
+
+```twig
+<nav>
+    <a href="{{ path('coucou') }}">Accueil</a>
+    {#  si nous ne sommes pas connectés #}
+    {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
+    <a href="{{ path('app_login') }}">Login</a>
+    {% else %}
+    <a href="{{ path('app_logout') }}">Logout</a>
+    {% endif %}
+</nav>
+```
+
+On peut empêcher un user connecté de retourner sur `/login` :
+
+```php
+# src/Controller/SecurityController.php
+
+# ...
+ #[Route(path: '/login', name: 'app_login')]
+    public function login(AuthenticationUtils $authenticationUtils): Response
+    {
+        // si on est déjà connecté et qu'on souhaite revenir sur login
+        if($this->isGranted('IS_AUTHENTICATED_FULLY')) {
+            // on retourne sur l'accueil
+            return $this->redirectToRoute('coucou');
+        }
+# ...
+```
+
+## Les thèmes de formulaires
+
+### Avec AssetMapper
+
+documentation : https://symfony.com/doc/current/form/form_themes.html#symfony-builtin-forms
+
+Dans le fichier, rajoutez le formulaire bootstrap
+
+# config/packages/twig.yaml
+    twig:
+        form_themes: ['bootstrap_5_layout.html.twig']
+
+Puis installons `bootstrap`
+
+    php bin/console importmap:require bootstrap
+
+    [OK] 3 new items (bootstrap, @popperjs/core,
+    bootstrap/dist/css/bootstrap.min.css) added to the importmap.php!
+
+Les fichiers se trouvent dans `asset`
+
+Pour le `CSS`, on va dans `assets/app.js` et rajoute le lien vers le css
+
+    import 'bootstrap/dist/css/bootstrap.min.css';

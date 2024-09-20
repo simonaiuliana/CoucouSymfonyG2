@@ -1,13 +1,10 @@
-{% extends 'base.html.twig' %}
+{% extends 'coucou/template.front.html.twig' %}
 
-{% block title %}{{ title }}{% endblock %}
+{% block title %}{{ parent() }} | {{ title }}{% endblock %}
 
-{% block body %}
-<div class="container">
-    {% include 'coucou/_menu.html.twig' %}
+{% block main %}
     <h1>{{ title }}</h1>
-    <p>Après la création de la database en `MySQL` nommée `coucousymfonyg2`,<br><br>
+    <p>Après la création de la database en `MySQL` nommée coucousymfonyg2,<br><br>
 
         Nous allons créer des entités.</p>
-</div>
 {% endblock %}

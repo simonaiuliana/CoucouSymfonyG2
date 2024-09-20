@@ -6,6 +6,8 @@ import './bootstrap.js';
  * which should already be in your base.html.twig.
  */
 
+import './bootstrap.bundle.min.js';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import './styles/app.css';

@@ -12,7 +12,7 @@ class CoucouController extends AbstractController
     public function index(): Response
     {
         return $this->render('coucou/index.html.twig', [
-            'title' => 'Coucou',
+            'title' => 'Homepage',
         ]);
     }
 }

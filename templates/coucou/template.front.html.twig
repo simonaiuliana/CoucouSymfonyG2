@@ -26,10 +26,12 @@
 
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('coucou') }}">Accueil</a>
-                </li>
+                </li>}
+                {% for section in sections %}
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Les sections</a>
+                    <a class="nav-link" href="{{ path('section', {id:section.id}) }}">{{ section.sectionTitle }}</a>
                 </li>
+                {% endfor %}
                 {# si on est connecté #}
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                     <li class="nav-item">

@@ -406,6 +406,7 @@ On peut empêcher un user connecté de retourner sur `/login` :
     {
         // si on est déjà connecté et qu'on souhaite revenir sur login
         if($this->isGranted('IS_AUTHENTICATED_FULLY')) {
+        // Ou if($this->getUser()) {
             // on retourne sur l'accueil
             return $this->redirectToRoute('coucou');
         }
@@ -436,3 +437,36 @@ Les fichiers se trouvent dans `asset`
 Pour le `CSS`, on va dans `assets/app.js` et rajoute le lien vers le css
 
     import 'bootstrap/dist/css/bootstrap.min.css';
+
+## Utilisation d'un template Bootstrap 5
+
+Nous prenons ce template :
+
+https://getbootstrap.com/docs/5.0/examples/navbar-static/
+
+On va récupérer le code nécessaire et les mettre dans le dossier `assets`
+
+`templates/base.html.twig`
+
+```twig
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}CoucouSymfonyG2{% endblock %}</title>
+        {% block stylesheets %}
+        {% endblock %}
+
+        {% block javascripts %}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% endblock %}
+    </head>
+    <body>
+        {# utilisation de content pour nos templates #}
+        {% block content %}{% endblock %}
+        {# On laisse body pour les fichiers générés par symfony #}
+        {% block body %}{% endblock %}
+    </body>
+</html>
+
+```

@@ -38,7 +38,11 @@ class Comment
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\Column]
+    #[ORM\Column(
+        options: [
+            'default' => false,
+        ]
+    )]
     private ?bool $commentPublished = null;
 
     public function getId(): ?int

@@ -266,6 +266,55 @@ https://symfony.com/doc/current/security.html
 
 on choisit `posts` -> `OneToMany`-> `Post` -> `user` -> `no` -> `no`
 
+### Relation User OneToMany Comment
+
+```bash
+php bin/console make:entity User
+ Your entity already exists! So let's add some new fields!
+
+ New property name (press <return> to stop adding fields):
+ > comments
+
+ Field type (enter ? to see all types) [string]:
+ > OneToMany
+OneToMany
+
+ What class should this entity be related to?:
+ > Comment
+Comment
+
+ A new property will also be added to the Comment class so that you can access and set the related User object from it.
+
+ New field name inside Comment [user]:
+ >
+
+ Is the Comment.user property allowed to be null (nullable)? (yes/no) [yes]:
+ > no
+
+ Do you want to activate orphanRemoval on your relationship?
+ A Comment is "orphaned" when it is removed from its related User.
+ e.g. $user->removeComment($comment)
+
+ NOTE: If a Comment may *change* from one User to another, answer "no".
+
+ Do you want to automatically delete orphaned App\Entity\Comment objects (orphanRemoval)? (yes/no) [no]:
+ >
+
+ updated: src/Entity/User.php
+ updated: src/Entity/Comment.php
+
+```
+
+On ajoute `commentPublished` avec false à `Comment`
+
+```php
+#[ORM\Column(
+        options: [
+            'default' => false,
+        ]
+    )]
+    private ?bool $commentPublished = null;
+```
 
 On fait une migration
 
@@ -316,3 +365,108 @@ Comme `password` :
 ! on doit hacher le mot de passe avec la commende :
 
     php bin/console security:hash-password 
+
+### Création d'un menu
+
+`templates/coucou/_menu.html.twig`
+
+```twig
+<nav>
+    <a href="{{ path('coucou') }}">Accueil</a>
+    <a href="{{ path('app_login') }}">Login</a>
+</nav>
+```
+
+Il est appelé depuis `templates/coucou/index.html.twig` et dans  avec 
+
+    {% include 'coucou/_menu.html.twig' %}
+
+On le modifie
+
+```twig
+<nav>
+    <a href="{{ path('coucou') }}">Accueil</a>
+    {#  si nous ne sommes pas connectés #}
+    {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
+    <a href="{{ path('app_login') }}">Login</a>
+    {% else %}
+    <a href="{{ path('app_logout') }}">Logout</a>
+    {% endif %}
+</nav>
+```
+
+On peut empêcher un user connecté de retourner sur `/login` :
+
+```php
+# src/Controller/SecurityController.php
+
+# ...
+ #[Route(path: '/login', name: 'app_login')]
+    public function login(AuthenticationUtils $authenticationUtils): Response
+    {
+        // si on est déjà connecté et qu'on souhaite revenir sur login
+        if($this->isGranted('IS_AUTHENTICATED_FULLY')) {
+        // Ou if($this->getUser()) {
+            // on retourne sur l'accueil
+            return $this->redirectToRoute('coucou');
+        }
+# ...
+```
+
+## Les thèmes de formulaires
+
+### Avec AssetMapper
+
+documentation : https://symfony.com/doc/current/form/form_themes.html#symfony-builtin-forms
+
+Dans le fichier, rajoutez le formulaire bootstrap
+
+# config/packages/twig.yaml
+    twig:
+        form_themes: ['bootstrap_5_layout.html.twig']
+
+Puis installons `bootstrap`
+
+    php bin/console importmap:require bootstrap
+
+    [OK] 3 new items (bootstrap, @popperjs/core,
+    bootstrap/dist/css/bootstrap.min.css) added to the importmap.php!
+
+Les fichiers se trouvent dans `asset`
+
+Pour le `CSS`, on va dans `assets/app.js` et rajoute le lien vers le css
+
+    import 'bootstrap/dist/css/bootstrap.min.css';
+
+## Utilisation d'un template Bootstrap 5
+
+Nous prenons ce template :
+
+https://getbootstrap.com/docs/5.0/examples/navbar-static/
+
+On va récupérer le code nécessaire et les mettre dans le dossier `assets`
+
+`templates/base.html.twig`
+
+```twig
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}CoucouSymfonyG2{% endblock %}</title>
+        {% block stylesheets %}
+        {% endblock %}
+
+        {% block javascripts %}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% endblock %}
+    </head>
+    <body>
+        {# utilisation de content pour nos templates #}
+        {% block content %}{% endblock %}
+        {# On laisse body pour les fichiers générés par symfony #}
+        {% block body %}{% endblock %}
+    </body>
+</html>
+
+```

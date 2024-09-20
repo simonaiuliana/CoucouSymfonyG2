@@ -266,6 +266,55 @@ https://symfony.com/doc/current/security.html
 
 on choisit `posts` -> `OneToMany`-> `Post` -> `user` -> `no` -> `no`
 
+### Relation User OneToMany Comment
+
+```bash
+php bin/console make:entity User
+ Your entity already exists! So let's add some new fields!
+
+ New property name (press <return> to stop adding fields):
+ > comments
+
+ Field type (enter ? to see all types) [string]:
+ > OneToMany
+OneToMany
+
+ What class should this entity be related to?:
+ > Comment
+Comment
+
+ A new property will also be added to the Comment class so that you can access and set the related User object from it.
+
+ New field name inside Comment [user]:
+ >
+
+ Is the Comment.user property allowed to be null (nullable)? (yes/no) [yes]:
+ > no
+
+ Do you want to activate orphanRemoval on your relationship?
+ A Comment is "orphaned" when it is removed from its related User.
+ e.g. $user->removeComment($comment)
+
+ NOTE: If a Comment may *change* from one User to another, answer "no".
+
+ Do you want to automatically delete orphaned App\Entity\Comment objects (orphanRemoval)? (yes/no) [no]:
+ >
+
+ updated: src/Entity/User.php
+ updated: src/Entity/Comment.php
+
+```
+
+On ajoute `commentPublished` avec false à `Comment`
+
+```php
+#[ORM\Column(
+        options: [
+            'default' => false,
+        ]
+    )]
+    private ?bool $commentPublished = null;
+```
 
 On fait une migration
 

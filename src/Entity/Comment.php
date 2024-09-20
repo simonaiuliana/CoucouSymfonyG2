@@ -34,6 +34,17 @@ class Comment
     #[ORM\JoinColumn(nullable: false)]
     private ?Post $post = null;
 
+    #[ORM\ManyToOne(inversedBy: 'comments')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
+    #[ORM\Column(
+        options: [
+            'default' => false,
+        ]
+    )]
+    private ?bool $commentPublished = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -71,6 +82,30 @@ class Comment
     public function setPost(?Post $post): static
     {
         $this->post = $post;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function isCommentPublished(): ?bool
+    {
+        return $this->commentPublished;
+    }
+
+    public function setCommentPublished(bool $commentPublished): static
+    {
+        $this->commentPublished = $commentPublished;
 
         return $this;
     }

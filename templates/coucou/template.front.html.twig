@@ -30,19 +30,21 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#">Les sections</a>
                 </li>
+                {# si on est connecté #}
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_logout') }}">Déconnexion</a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_logout') }}">Déconnexion</a>
+                    </li>
+                    {# et si on est admin #}
                     {% if is_granted("ROLE_ADMIN") %}
                         <li class="nav-item">
                             <a class="nav-link" href="/admin">Administration</a>
                         </li>
-                        {% endif %}
+                    {% endif %}
                 {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
+                    </li>
                 {% endif %}
             </ul>
         </div>

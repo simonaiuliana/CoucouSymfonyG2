@@ -362,7 +362,7 @@ Comme `password` :
 
     coucou123
 
-! on doit hacher le mot de passe avec la commende :
+! on doit hacher le mot de passe avec la commande :
 
     php bin/console security:hash-password 
 
@@ -468,5 +468,193 @@ On va récupérer le code nécessaire et les mettre dans le dossier `assets`
         {% block body %}{% endblock %}
     </body>
 </html>
+
+```
+
+On crée en suite un template en partant de l'URL au-dessus, les fichiers entre `{{ asset('url')}}` se trouvent dans le dossier `assets`
+
+```twig
+{# templates/coucou/template.front.html.twig #}
+{% extends 'base.html.twig' %}
+{% block title %}Blog Coucou{% endblock %}
+{% block stylesheets %}<link rel="apple-touch-icon" href="{{ asset('images/apple-touch-icon.png') }}" sizes="180x180">
+<link rel="icon" href="{{ asset('images/favicon-32x32.png') }}" sizes="32x32" type="image/png">
+<link rel="icon" href="{{ asset('images/favicon-16x16.png') }}" sizes="16x16" type="image/png">
+<link rel="manifest" href="{{ asset('images/manifest.json') }}">
+<link rel="mask-icon" href="{{ asset('images/safari-pinned-tab.svg')}}" color="#7952b3">
+<link rel="icon" href="{{ asset('images/favicon.ico')}}">
+<meta name="theme-color" content="#7952b3">{% endblock %}
+
+{% block content %}
+
+{% block nav %}
+<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ path('coucou') }}">CoucouSymfonyG2</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{{ path('coucou') }}"></a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('coucou') }}">Accueil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Les sections</a>
+                </li>
+                {# si on est connecté #}
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_logout') }}">Déconnexion</a>
+                </li>
+                    {# et si on est admin #}
+                    {% if is_granted("ROLE_ADMIN") %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin">Administration</a>
+                        </li>
+                        {% endif %}
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+{% block header %}
+<main class="container">
+    <div class=" p-5 rounded">
+        <h1>{{ title }}</h1>
+        <p class="lead">{% block lead %}{% endblock %}</p>
+    </div>
+</main>
+{% endblock %}
+{% block main %}
+{% endblock %}
+{% endblock %}
+```
+
+On a également copié `assets/bootstrap.bundle.min.js` depuis le site, et appelé dans `assets/app.js`
+
+```js
+import './bootstrap.js';
+/*
+ * Welcome to your app's main JavaScript file!
+ *
+ * This file will be included onto the page via the importmap() Twig function,
+ * which should already be in your base.html.twig.
+ */
+
+import './bootstrap.bundle.min.js';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import './styles/app.css';
+
+console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
+
+```
+
+On a ajouté le css du template dans `assets/styles/app.css`
+
+```css
+body {
+    background-color: skyblue;
+    min-height: 75rem;
+}
+.bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+@media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+    }
+}
+```
+
+## On va créer un contrôleur pour notre administration
+
+    php bin/console make:controller AdminController
+
+Le chemin est vers `/admin`
+
+Nous avons changé l'accessibilité du chemin dans `config/packages/security.yaml`
+
+```yaml
+security:
+# ...
+    firewalls:
+# ...
+      main:
+# ...
+    access_control:
+      - { path: ^/admin, roles: ROLE_ADMIN }
+      # - { path: ^/profile, roles: ROLE_USER }
+# ...
+```
+
+On va créer un `User` manuellement dans la DB
+
+Comme `username` :
+
+    pomme
+
+Comme `roles` :
+
+    [
+    ]
+
+Comme `password` :
+
+    pomme123
+
+! on doit hacher le mot de passe avec la commende :
+
+    php bin/console security:hash-password 
+
+Cet utilisateur, bien que connecté, ne peut aller dans l'administration
+
+On crée une admin contrôleur : `src/Controller/AdminController.php`
+
+## Création d'un CRUD pour la section
+
+```bash
+ php bin/console make:crud
+
+ The class name of the entity to create CRUD (e.g. OrangePopsicle):
+ > Section
+Section
+
+ Choose a name for your controller class (e.g. SectionController) [SectionController]:
+ > AdminSectionController
+
+ Do you want to generate PHPUnit tests? [Experimental] (yes/no) [no]:
+ >
+
+ created: src/Controller/AdminSectionController.php
+ created: src/Form/SectionType.php
+ created: templates/admin_section/_delete_form.html.twig
+ created: templates/admin_section/_form.html.twig
+ created: templates/admin_section/edit.html.twig
+ created: templates/admin_section/index.html.twig
+ created: templates/admin_section/new.html.twig
+ created: templates/admin_section/show.html.twig
+
+
+  Success!
+
+
+ Next: Check your new CRUD by going to /admin/section/
 
 ```

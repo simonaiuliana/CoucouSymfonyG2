@@ -20,6 +20,8 @@ class SectionType extends AbstractType
                 'class' => Post::class,
                 'choice_label' => 'id',
                 'multiple' => true,
+                'expanded' => true,
+                'required' => false,
             ])
         ;
     }

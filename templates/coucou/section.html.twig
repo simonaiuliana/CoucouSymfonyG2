@@ -1,0 +1,9 @@
+{% extends 'coucou/template.front.html.twig' %}
+
+{% block title %}{{ parent() }} | {{ title }}{% endblock %}
+
+{% block lead %}Ceci est la section {{ title }} - {{ section.sectionDescription }}{% endblock %}
+
+{% block main %}
+
+{% endblock %}

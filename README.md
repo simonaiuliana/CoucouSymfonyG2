@@ -444,7 +444,14 @@ Nous prenons ce template :
 
 https://getbootstrap.com/docs/5.0/examples/navbar-static/
 
-On va récupérer le code nécessaire et les mettre dans le dossier `assets`
+On va récupérer le code nécessaire et les mettre dans le dossier `assets` :
+Les javascripts, css, images etc...
+
+- Les images ou icônes dans `assets/images`
+- le javascript : `assets/bootstrap.bundle.min.js`
+
+
+## Préparation du template dans le fichier de base
 
 `templates/base.html.twig`
 
@@ -692,3 +699,47 @@ use App\Repository\SectionRepository;
     }
 # ...
 ```
+
+Dans `templates/coucou/template.back.html.twig`
+
+```php
+# ...
+{# ajout de la bienvenue et le nom utilisateur #}
+        <p class="lead">{% block lead %}Bienvenue {{ app.user.username }}{% endblock %}</p>
+# ...
+```
+
+## Création d'un CRUD pour Post
+
+```bash
+php bin/console make:crud
+
+ The class name of the entity to create CRUD (e.g. VictoriousPuppy):
+ > Post
+Post
+
+ Choose a name for your controller class (e.g. PostController) [PostController]:
+ > AdminPostController
+
+ Do you want to generate PHPUnit tests? [Experimental] (yes/no) [no]:
+ > yes
+
+ created: src/Controller/AdminPostController.php
+ created: src/Form/PostType.php
+ created: templates/admin_post/_delete_form.html.twig
+ created: templates/admin_post/_form.html.twig
+ created: templates/admin_post/edit.html.twig
+ created: templates/admin_post/index.html.twig
+ created: templates/admin_post/new.html.twig
+ created: templates/admin_post/show.html.twig
+ created: tests/Controller/PostControllerTest.php
+
+
+  Success!
+
+
+ Next: Check your new CRUD by going to /admin/post/
+
+```
+
+Il faut ensuite créer les liens vers ce CRUD dans l'administration

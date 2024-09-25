@@ -70,7 +70,7 @@ final class AdminSectionController extends AbstractController
         return $this->render('admin_section/edit.html.twig', [
             'section' => $section,
             'form' => $form,
-            'title' => 'Modifier section',
+            'title' => 'Modifier '.$section->getSectionTitle(),
         ]);
     }
 

@@ -18,7 +18,8 @@
 <main class="container">
     <div class=" p-5 rounded">
         <h1>{{ title }}</h1>
-        <p class="lead">{% block lead %}{% endblock %}</p>
+        {# ajout de la bienvenue et le nom utilisateur #}
+        <p class="lead">{% block lead %}Bienvenue {{ app.user.username }}{% endblock %}</p>
     </div>
 </main>
 {% endblock %}

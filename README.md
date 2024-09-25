@@ -658,3 +658,37 @@ Section
  Next: Check your new CRUD by going to /admin/section/
 
 ```
+
+Dans la partie `/login`, nous avons une erreur, car il nous manque les sections
+
+Donc dans le fichier `src/Controller/SecurityController.php` nous allons joindre les sections nécessaires au menu :
+
+```php
+
+# on va charger le Repository (manager) de Section
+use App\Repository\SectionRepository;
+# ...
+#[Route(path: '/login', name: 'app_login')]
+    public function login(AuthenticationUtils $authenticationUtils, SectionRepository $sectionRepository): Response
+    {
+        // si on est déjà connecté et qu'on souhaite revenir sur login
+        if($this->getUser()) {
+            // on retourne sur l'accueil
+            return $this->redirectToRoute('coucou');
+        }
+        // get the login error if there is one
+        $error = $authenticationUtils->getLastAuthenticationError();
+
+        // last username entered by the user
+        $lastUsername = $authenticationUtils->getLastUsername();
+
+        return $this->render('security/login.html.twig', [
+            'last_username' => $lastUsername,
+            'error' => $error,
+            'title' => "Connexion",
+            # on récupère toutes les sections avec le findAll()
+            'sections' => $sectionRepository->findAll(),
+        ]);
+    }
+# ...
+```

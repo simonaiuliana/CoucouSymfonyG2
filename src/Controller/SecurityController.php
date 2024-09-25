@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Controller;
+
+# on va charger le Repository (manager) de Section
 use App\Repository\SectionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,7 +12,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends AbstractController
 {
     #[Route(path: '/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(AuthenticationUtils $authenticationUtils, SectionRepository $sectionRepository): Response
     {
         // si on est déjà connecté et qu'on souhaite revenir sur login
         if($this->getUser()) {

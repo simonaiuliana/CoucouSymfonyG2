@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Entity\Tag;
 use App\Form\PostType;
 use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,11 +29,20 @@ final class AdminPostController extends AbstractController
     #[Route('/new', name: 'app_admin_post_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+        $tagRepository = $entityManager->getRepository(Tag::class);
+        $tags = $tagRepository->findAll();
+        $tagNames = [];
+        foreach($tags as $tag) $tagNames[$tag->getTagName()] = $tag->getId();
         $post = new Post();
-        $form = $this->createForm(PostType::class, $post);
+        $form = $this->createForm(PostType::class, $post, ['tags' => $tagNames]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            foreach($post->getTagsId() as $tagId){
+                $post->addTag($tagRepository->findOneBy([
+                    'id' => $tagId
+                ]));
+            }
             $entityManager->persist($post);
             $entityManager->flush();
 
@@ -58,7 +68,13 @@ final class AdminPostController extends AbstractController
     #[Route('/{id}/edit', name: 'app_admin_post_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Post $post, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(PostType::class, $post);
+        $tagRepository = $entityManager->getRepository(Tag::class);
+        $tags = $tagRepository->findAll();
+        $tagNames = [];
+        $tagDatas = [];
+        foreach($tags as $tag) $tagNames[$tag->getTagName()] = $tag->getId();
+        foreach($post->getTags() as $tag) $tagDatas[] = $tag->getId();
+        $form = $this->createForm(PostType::class, $post, ['tags' => $tagNames, 'tagDatas' => $tagDatas]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

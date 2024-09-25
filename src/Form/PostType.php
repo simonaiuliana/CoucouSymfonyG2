@@ -10,6 +10,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -36,9 +37,11 @@ class PostType extends AbstractType
                 'expanded' => true,
                 'required' => false,
             ])
-            ->add('tags', CollectionType::class, [
-                'entry_type' => Tag::class,
-                'required' => false,
+            ->add('tagsId', ChoiceType::class, [
+                'choices' => $options['tags'],
+                'data' => $options['tagDatas'],
+                'multiple' => true,
+                'expanded' => true
             ])
             ->add('user', EntityType::class, [
                 'class' => User::class,
@@ -51,6 +54,8 @@ class PostType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Post::class,
+            'tags' => [],
+            'tagDatas' => [],
         ]);
     }
 }

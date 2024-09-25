@@ -743,3 +743,7 @@ Post
 ```
 
 Il faut ensuite créer les liens vers ce CRUD dans l'administration
+
+Puis gestion des tags : 
+
+https://symfony.com/doc/6.4/form/form_collections.html#allowing-new-tags-with-the-prototype

@@ -78,6 +78,12 @@ final class AdminPostController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $post->getTags()->clear();
+            foreach($post->getTagsId() as $tagId){
+                $post->addTag($tagRepository->findOneBy([
+                    'id' => $tagId
+                ]));
+            }
             $entityManager->flush();
 
             return $this->redirectToRoute('app_admin_post_index', [], Response::HTTP_SEE_OTHER);

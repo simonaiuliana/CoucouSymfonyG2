@@ -55,10 +55,8 @@ class Post
     /**
      * @var Collection<int, Tag>
      */
-    #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'posts')]
+    #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'posts', cascade: ['persist'])]
     private Collection $tags;
-
-    private array $tagsId;
 
     /**
      * @var Collection<int, Comment>
@@ -75,7 +73,6 @@ class Post
         $this->sections = new ArrayCollection();
         $this->tags = new ArrayCollection();
         $this->comments = new ArrayCollection();
-        $this->tagsId = [];
     }
 
     public function getId(): ?int
@@ -173,17 +170,6 @@ class Post
     public function getTags(): Collection
     {
         return $this->tags;
-    }
-
-    public function getTagsId(): array
-    {
-        return $this->tagsId;
-    }
-
-    public function setTagsId(array $tagsId): static
-    {
-        $this->tagsId = $tagsId;
-        return $this;
     }
 
     public function addTag(Tag $tag): static

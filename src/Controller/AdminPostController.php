@@ -11,6 +11,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Validator\Constraints\Valid;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 // (C)afé, (R)écupération après avoir cassé le code, (U)ltrarapide prise de panique, (D)ebug toute la nuit !
 // (C)'est (R)elou, (U)nique dans sa capacité à (D)éclencher des bugs incompréhensibles. 😑
@@ -29,23 +31,12 @@ final class AdminPostController extends AbstractController
     #[Route('/new', name: 'app_admin_post_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $tagRepository = $entityManager->getRepository(Tag::class);
-        $tags = $tagRepository->findAll();
-        $tagNames = [];
-        foreach($tags as $tag) $tagNames[$tag->getTagName()] = $tag->getId();
         $post = new Post();
-        $form = $this->createForm(PostType::class, $post, ['tags' => $tagNames]);
+        $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
-            foreach($post->getTagsId() as $tagId){
-                $post->addTag($tagRepository->findOneBy([
-                    'id' => $tagId
-                ]));
-            }
             $entityManager->persist($post);
             $entityManager->flush();
-
             return $this->redirectToRoute('app_admin_post_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -66,26 +57,12 @@ final class AdminPostController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_admin_post_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Post $post, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Post $post, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
     {
-        $tagRepository = $entityManager->getRepository(Tag::class);
-        $tags = $tagRepository->findAll();
-        $tagNames = [];
-        $tagDatas = [];
-        foreach($tags as $tag) $tagNames[$tag->getTagName()] = $tag->getId();
-        foreach($post->getTags() as $tag) $tagDatas[] = $tag->getId();
-        $form = $this->createForm(PostType::class, $post, ['tags' => $tagNames, 'tagDatas' => $tagDatas]);
+        $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
-            $post->getTags()->clear();
-            foreach($post->getTagsId() as $tagId){
-                $post->addTag($tagRepository->findOneBy([
-                    'id' => $tagId
-                ]));
-            }
             $entityManager->flush();
-
             return $this->redirectToRoute('app_admin_post_index', [], Response::HTTP_SEE_OTHER);
         }
 

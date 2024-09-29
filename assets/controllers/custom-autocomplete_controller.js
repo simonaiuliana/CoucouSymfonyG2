@@ -19,12 +19,14 @@ export default class extends Controller {
             return `<div class="create">Ajouter <strong>${escapeData(data.input)}</strong>&hellip;</div>`;
         };
         event.detail.options.onType = function(str){
-            let canCreate = true;
-            for (const tag in this.options) {
-                if(!this.options[tag].text.includes(str)) continue;
-                canCreate = false;
-                break;
-            }
+            /* Security front side */
+            let canCreate = str.length > 1 && str.length <= 60;
+            if(canCreate)
+                for (const tag in this.options) {
+                    if(this.options[tag].text.toLowerCase() !== str.toLowerCase()) continue;
+                    canCreate = false;
+                    break;
+                }
             this.settings.create = canCreate;
         }
     }

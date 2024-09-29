@@ -11,6 +11,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -77,6 +78,14 @@ class PostType extends AbstractType
         $data = $this->brutData;
         foreach ($data as $tagName) {
             if(ctype_digit($tagName)) continue;
+            $tagName = htmlspecialchars($tagName);
+            $length = strlen($tagName);
+            /* Security back end */
+            if(!($length > 1 && $length <= 60)){
+                $message = $length < 1 ? "supérieur à 1" : ($length > 60 ? "inférieur à 60" : "ERROR");
+                $form->addError(new FormError("Le nom du tag $tagName doit être $message caractères."));
+                return;
+            }
             if($this->tagRepository->findOneBy([
                 'tagName' => $tagName
             ]) !== null) continue;

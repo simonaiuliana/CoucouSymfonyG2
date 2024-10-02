@@ -19,10 +19,11 @@ class CoucouController extends AbstractController
         ]);
     }
 
-    # A FAIRE
+
     #[Route('/section/{id}', name: 'section')]
     public function section(int $id, SectionRepository $sections): Response
     {
+        # Sélection de la section quand son id vaut celui de la page
         $section = $sections->findOneBy(['id' => $id]);
         return $this->render('coucou/section.html.twig', [
             'title' => $section->getSectionTitle(),

@@ -444,7 +444,14 @@ Nous prenons ce template :
 
 https://getbootstrap.com/docs/5.0/examples/navbar-static/
 
-On va récupérer le code nécessaire et les mettre dans le dossier `assets`
+On va récupérer le code nécessaire et les mettre dans le dossier `assets` :
+Les javascripts, css, images etc...
+
+- Les images ou icônes dans `assets/images`
+- le javascript : `assets/bootstrap.bundle.min.js`
+
+
+## Préparation du template dans le fichier de base
 
 `templates/base.html.twig`
 
@@ -692,3 +699,124 @@ use App\Repository\SectionRepository;
     }
 # ...
 ```
+
+Dans `templates/coucou/template.back.html.twig`
+
+```php
+# ...
+{# ajout de la bienvenue et le nom utilisateur #}
+        <p class="lead">{% block lead %}Bienvenue {{ app.user.username }}{% endblock %}</p>
+# ...
+```
+
+## Création d'un CRUD pour Post
+
+```bash
+php bin/console make:crud
+
+ The class name of the entity to create CRUD (e.g. VictoriousPuppy):
+ > Post
+Post
+
+ Choose a name for your controller class (e.g. PostController) [PostController]:
+ > AdminPostController
+
+ Do you want to generate PHPUnit tests? [Experimental] (yes/no) [no]:
+ > yes
+
+ created: src/Controller/AdminPostController.php
+ created: src/Form/PostType.php
+ created: templates/admin_post/_delete_form.html.twig
+ created: templates/admin_post/_form.html.twig
+ created: templates/admin_post/edit.html.twig
+ created: templates/admin_post/index.html.twig
+ created: templates/admin_post/new.html.twig
+ created: templates/admin_post/show.html.twig
+ created: tests/Controller/PostControllerTest.php
+
+
+  Success!
+
+
+ Next: Check your new CRUD by going to /admin/post/
+
+```
+
+Il faut ensuite créer les liens vers ce CRUD dans l'administration
+
+Puis gestion des tags : 
+
+https://symfony.com/doc/6.4/form/form_collections.html#allowing-new-tags-with-the-prototype
+
+## Gestion des tags 
+
+Depuis `Post` voir :
+
+https://github.com/WebDevCF2m2023/CoucouSymfonyG2/commit/5f181c12cd65acfafd2bc7f8af3ec0181449d666
+
+## Affichage des `Post`
+
+Depuis les sections `templates/coucou/section.html.twig`
+
+On peut déboguer avec dump la variable `section`
+
+```twig
+{% block main %}
+
+    {{ dump(section) }}
+
+{% endblock %}
+```
+On voit la section, mais également qu'il y a un lien vers les posts
+
+Documentation des for: 
+
+https://twig.symfony.com/doc/3.x/tags/for.html
+
+On peut suivre les liens entre les tables, par exemple afficher les auteurs, tags, section etc depuis twig : 
+
+**Avantage** Fais nos requêtes à notre place
+
+**Désavantage** Peux faire beaucoup trop de requête
+
+Depuis les sections `templates/coucou/section.html.twig`
+
+```twig
+{% block main %}
+
+    {#  dump(section) #}
+
+    {% for post in section.posts %}
+        <h3>{{ post.postTitle }}</h3>
+        
+        <p>Ecrit par {{ post.user.username }} 
+        le {{ post.postDateCreated|date("d/m/Y \à H:i") }}</p>
+        <p>{{ post.postDescription }}</p>
+        
+        {# création d'une variable contenant le nombre sections #}
+        {% set nbSection = post.sections|length %}
+        
+        <p>Section{% if nbSection > 1 %}s{% endif%} ({{ nbSection }}) :
+        {# ou ternaire {{ nbSection > 1 ? "s" : "" }} #}
+        
+            {# sections pour le Post #}
+            {% for section in post.sections %}
+                <a href="{{ path('section', {id:section.id}) }}">{{ section.sectionTitle }}</a>
+                
+                {# si nous ne sommes pas
+                 au dernier tour de boucle #}
+                 
+                {% if not loop.last %}|
+                {# dernier tour de boucle #}
+                {% else %}
+                <hr>{% endif %}
+            {% endfor %}
+
+        </p>
+
+        {# sinon (boucle vide) #}
+    {% else %}
+     <h3>Section vide</h3>
+    {% endfor %}
+
+{% endblock %}

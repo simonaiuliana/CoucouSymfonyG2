@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Post;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use function Symfony\Component\String\u;
 
 /**
  * @extends ServiceEntityRepository<Post>
@@ -14,6 +16,16 @@ class PostRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Post::class);
+    }
+
+    # Sélection des Posts par titre descendant avec les utilisateurs
+    public function findByTitleDesc(): array
+    {
+        return $this->createQueryBuilder('p',)
+            ->innerJoin(User::class, 'u', 'WITH', 'p.user = u.id')
+            ->orderBy('p.postTitle', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 
     //    /**
